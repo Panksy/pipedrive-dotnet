@@ -7,21 +7,24 @@ using System.Collections.Generic;
 namespace Pipedrive
 {
 
-    public class Pipeline 
+    public class Stage 
     {
         public long Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("url_title")]
-        public string URLTitle { get; set; }
+        [JsonProperty("pipeline_name")]
+        public string PipelineName { get; set; }
+
+        [JsonProperty("pipeline_id")]
+		public long PipelineId { get; set; }
 
         [JsonProperty("order_nr")]
         public int OrderNr { get; set; }
 
-        [JsonProperty("active")]
-        public bool Active { get; set; }
+        [JsonProperty("active_flag")]
+        public bool ActiveFlag { get; set; }
 
         [JsonProperty("update_time")]
         public DateTime? UpdateTime { get; set; }
@@ -30,20 +33,18 @@ namespace Pipedrive
         public DateTime AddTime { get; set; }
 
         [JsonProperty("deal_probability")]
-        public bool DealProbability { get; set; }
-
-        [JsonProperty("selected")]
-        public bool Selected { get; set; }
+        public int DealProbability { get; set; }
 
 
-        public PipelineUpdate ToUpdate()
+
+        public StageUpdate ToUpdate()
         {
-            return new PipelineUpdate
+            return new StageUpdate
             {
                 Name = Name,
 				OrderNr = OrderNr,
 				DealProbability = DealProbability,
-				Active = Active
+				ActiveFlag = ActiveFlag
             };
         }
     }
