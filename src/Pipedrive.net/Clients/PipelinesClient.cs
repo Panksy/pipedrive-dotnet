@@ -29,7 +29,17 @@ namespace Pipedrive
             return ApiConnection.Get<Pipeline>(ApiUrls.Pipeline(id));
         }
 
-        public Task<Pipeline> Create(NewPipeline data)
+		public Task<IReadOnlyList<SimpleCustomeDeal>> GetDeals(long id)
+		{
+			var options = new ApiOptions
+			{
+				PageSize = 500
+			};
+
+			return ApiConnection.GetAll<SimpleCustomeDeal>(ApiUrls.PipelineDeals(id),  options);
+		}
+
+		public Task<Pipeline> Create(NewPipeline data)
         {
             Ensure.ArgumentNotNull(data, nameof(data));
 

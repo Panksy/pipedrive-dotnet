@@ -24,6 +24,7 @@ namespace Pipedrive
         public NewPipeline(string name)
         {
             this.Name = name;
+			this.Active = true; // default to active
         }
     }
 }

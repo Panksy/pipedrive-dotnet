@@ -25,14 +25,14 @@ namespace Pipedrive
             return ApiConnection.GetAll<Stage>(ApiUrls.Stages());
         }
 
-        public Task<IReadOnlyList<Person>> GetAllForPipelineId(int pipelineId)
+        public Task<IReadOnlyList<Stage>> GetAllForPipelineId(long pipelineId)
         {
 			var filters = new StageFilters(){ 
 				PipelineId = pipelineId
 			};
             var parameters = filters.Parameters;
 
-            return ApiConnection.GetAll<Person>(ApiUrls.Persons(), parameters);
+            return ApiConnection.GetAll<Stage>(ApiUrls.Stages(), parameters);
         }
 
  

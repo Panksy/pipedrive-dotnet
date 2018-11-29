@@ -10,9 +10,11 @@ namespace Pipedrive
     /// See the <a href="https://developers.pipedrive.com/docs/api/v1/#!/Stages">Stages API documentation</a> for more information.
     public interface IStagesClient
     {
-        Task<IReadOnlyList<Stage>> GetAll(StageFilters stageFilters);
+        Task<IReadOnlyList<Stage>> GetAll();
 
-        Task<Stage> Get(long id);
+		Task<IReadOnlyList<Stage>> GetAllForPipelineId(long id);
+		
+		Task<Stage> Get(long id);
 
         Task<Stage> Create(NewStage data);
 

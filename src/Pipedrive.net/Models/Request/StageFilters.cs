@@ -9,7 +9,7 @@ namespace Pipedrive
             get { return new StageFilters(); }
         }
 
-        public int? PipelineId { get; set; }
+        public long? PipelineId { get; set; }
 
 
         /// <summary>
