@@ -166,21 +166,57 @@ namespace Pipedrive
         /// <param name="accepts">Accept header to use for the API request</param>
         /// <returns><see cref="IReadOnlyList{T}"/> of the The API resources in the list.</returns>
         /// <exception cref="ApiException">Thrown when an API error occurs.</exception>
-        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts)
+        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts)
         {
             Ensure.ArgumentNotNull(uri, nameof(uri));
+			var page = await GetPage<T>(uri, parameters, accepts);
+			var items = new List<T>();
+			items.AddRange(page);
 
-            return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts).ConfigureAwait(false), uri);
-        }
+			if (page.Pagination.MoreItemsInCollection)
+			{
+				parameters["start"] = page.Pagination.NextStart.ToString();
+				while ((page = await GetPage<T>(uri, parameters, accepts).ConfigureAwait(false)).Pagination.MoreItemsInCollection)
+				{
+					items.AddRange(page);
+					parameters["start"] = page.Pagination.NextStart.ToString();
+				}
+			}
+			return items;
+			//return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts).ConfigureAwait(false), uri);
+		}
 
-        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts, ApiOptions options)
+        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts, ApiOptions options)
         {
             Ensure.ArgumentNotNull(uri, nameof(uri));
             Ensure.ArgumentNotNull(options, nameof(options));
 
             parameters = Pagination.Setup(parameters, options);
 
-            return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts, options).ConfigureAwait(false), uri);
+			var page = await GetPage<T>(uri, parameters, accepts, options);
+			var items = new List<T>();
+			
+			items.AddRange(page);
+
+			if (page.Pagination.MoreItemsInCollection)
+			{
+				var previousPageStart = page.Pagination.NextStart;
+				options.StartPage = page.Pagination.NextStart;
+				parameters["start"] = page.Pagination.NextStart.ToString();
+				while ((page = await GetPage<T>(uri, parameters, accepts, options).ConfigureAwait(false)).Pagination.MoreItemsInCollection)
+				{
+					items.AddRange(page);
+					options.StartPage = page.Pagination.NextStart;
+					parameters["start"] = page.Pagination.NextStart.ToString();
+				}
+				// Add the last ones that were left in the last page
+				items.AddRange(page);
+			}
+		
+			return items;
+
+
+			//return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts, options).ConfigureAwait(false), uri);
         }
 
         /// <summary>
@@ -418,6 +454,7 @@ namespace Pipedrive
             Ensure.ArgumentNotNull(uri, nameof(uri));
 
             var response = await Connection.Get<List<T>>(uri, parameters, accepts).ConfigureAwait(false);
+			
             return new ReadOnlyPagedCollection<T>(
                 response,
                 nextPageUri => Connection.Get<List<T>>(nextPageUri, parameters, accepts));

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Pipedrive.Helpers;
+using Pipedrive.Http;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -42,13 +43,17 @@ namespace Pipedrive.Internal
                 if (!string.IsNullOrEmpty(body) && body != "{}")
                 {
                     T newBody = default(T);
-                    if (body.StartsWith("{", StringComparison.Ordinal) || body.StartsWith("[", StringComparison.Ordinal))
+					AdditionalData additionalInfo = new AdditionalData();
+
+					if (body.StartsWith("{", StringComparison.Ordinal) || body.StartsWith("[", StringComparison.Ordinal))
                     {
                         var json = JsonConvert.DeserializeObject<JsonResponse<T>>(body);
                         newBody = json.Data;
-                    }
+						additionalInfo = json.AdditionalData;
 
-                    return new ApiResponse<T>(response, newBody);
+					}
+
+                    return new ApiResponse<T>(response, newBody, additionalInfo);
                 }
             }
             return new ApiResponse<T>(response);

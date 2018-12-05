@@ -39,6 +39,20 @@ namespace Pipedrive
 			return ApiConnection.GetAll<SimpleCustomeDeal>(ApiUrls.PipelineDeals(id),  options);
 		}
 
+		public Task<IReadOnlyList<SimpleCustomeDeal>> GetDealsInStage(long id, long stageId)
+		{
+			var options = new ApiOptions
+			{
+				PageSize = 500
+			};
+
+			var parameters = new Dictionary<string, string>();
+			parameters.Add("stage_id", stageId.ToString());
+
+			return ApiConnection.GetAll<SimpleCustomeDeal>(ApiUrls.PipelineDeals(id), parameters, options);
+		}
+
+
 		public Task<Pipeline> Create(NewPipeline data)
         {
             Ensure.ArgumentNotNull(data, nameof(data));

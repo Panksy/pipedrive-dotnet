@@ -18,7 +18,9 @@ namespace Pipedrive
 
         Task<Organization> Get(long id);
 
-        Task<Organization> Create(NewOrganization data);
+		Task<IReadOnlyList<Deal>> GetDeals(long id);
+
+		Task<Organization> Create(NewOrganization data);
 
         Task<Organization> Edit(long id, OrganizationUpdate data);
 

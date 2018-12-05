@@ -16,6 +16,8 @@ namespace Pipedrive
 
 		Task<IReadOnlyList<SimpleCustomeDeal>> GetDeals(long id);
 
+		Task<IReadOnlyList<SimpleCustomeDeal>> GetDealsInStage(long id, long stageId);
+
 		Task<Pipeline> Create(NewPipeline data);
 
         Task<Pipeline> Edit(long id, PipelineUpdate data);

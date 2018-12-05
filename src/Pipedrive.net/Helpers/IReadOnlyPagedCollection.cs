@@ -10,11 +10,12 @@ namespace Pipedrive
     /// <typeparam name="T"></typeparam>
     public interface IReadOnlyPagedCollection<T> : IReadOnlyList<T>
     {
-        /// <summary>
-        /// Returns the next page of items.
-        /// </summary>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
+		PaginationInfo Pagination { get; }
+		/// <summary>
+		/// Returns the next page of items.
+		/// </summary>
+		/// <returns></returns>
+		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
             Justification = "Makes a network request")]
         Task<IReadOnlyPagedCollection<T>> GetNextPage();
     }

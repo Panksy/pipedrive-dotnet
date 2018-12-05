@@ -132,11 +132,27 @@ namespace Pipedrive.Internal
                     }
                 }
             }
-            IEntityWithCustomFields model = (IEntityWithCustomFields)Activator.CreateInstance(objectType);
-            serializer.Populate(jObject.CreateReader(), model);
-            model.CustomFields = customFields;
+				IEntityWithCustomFields model = (IEntityWithCustomFields)Activator.CreateInstance(objectType);
+			try
+			{
+				serializer.Populate(jObject.CreateReader(), model);
+				model.CustomFields = customFields;
+			}
+			catch (Exception ex) {
+				Console.WriteLine($"skipped a model {objectType} "+ jObject.ToString() + " "+ex.Message);
+			}
 
-            return model;
+			try
+			{
+			
+				model.CustomFields = customFields;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("skipped a model " + ex.Message);
+			}
+
+			return model;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
