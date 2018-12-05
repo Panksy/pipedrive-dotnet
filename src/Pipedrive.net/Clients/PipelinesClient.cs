@@ -29,17 +29,17 @@ namespace Pipedrive
             return ApiConnection.Get<Pipeline>(ApiUrls.Pipeline(id));
         }
 
-		public Task<IReadOnlyList<SimpleCustomeDeal>> GetDeals(long id)
+		public Task<IReadOnlyList<SimpleCustomDeal>> GetDeals(long id)
 		{
 			var options = new ApiOptions
 			{
 				PageSize = 500
 			};
 
-			return ApiConnection.GetAll<SimpleCustomeDeal>(ApiUrls.PipelineDeals(id),  options);
+			return ApiConnection.GetAll<SimpleCustomDeal>(ApiUrls.PipelineDeals(id),  options);
 		}
 
-		public Task<IReadOnlyList<SimpleCustomeDeal>> GetDealsInStage(long id, long stageId)
+		public Task<IReadOnlyList<SimpleCustomDeal>> GetDealsInStage(long id, long stageId)
 		{
 			var options = new ApiOptions
 			{
@@ -49,7 +49,7 @@ namespace Pipedrive
 			var parameters = new Dictionary<string, string>();
 			parameters.Add("stage_id", stageId.ToString());
 
-			return ApiConnection.GetAll<SimpleCustomeDeal>(ApiUrls.PipelineDeals(id), parameters, options);
+			return ApiConnection.GetAll<SimpleCustomDeal>(ApiUrls.PipelineDeals(id), parameters, options);
 		}
 
 

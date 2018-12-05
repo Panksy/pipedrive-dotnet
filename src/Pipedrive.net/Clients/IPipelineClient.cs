@@ -14,9 +14,9 @@ namespace Pipedrive
 
         Task<Pipeline> Get(long id);
 
-		Task<IReadOnlyList<SimpleCustomeDeal>> GetDeals(long id);
+		Task<IReadOnlyList<SimpleCustomDeal>> GetDeals(long id);
 
-		Task<IReadOnlyList<SimpleCustomeDeal>> GetDealsInStage(long id, long stageId);
+		Task<IReadOnlyList<SimpleCustomDeal>> GetDealsInStage(long id, long stageId);
 
 		Task<Pipeline> Create(NewPipeline data);
 

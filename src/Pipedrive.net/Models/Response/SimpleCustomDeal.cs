@@ -5,14 +5,17 @@ using System.Collections.Generic;
 namespace Pipedrive
 {
 	[JsonConverter(typeof(CustomFieldConverter))]
-	public class SimpleCustomeDeal : IEntityWithCustomFields
+	public class SimpleCustomDeal : IEntityWithCustomFields
 	{
         public long Id { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }
 
-        [JsonProperty("user_id")]
+		[JsonProperty("stage_id")]
+		public long StageId { get; set; }
+
+		[JsonProperty("user_id")]
         public long UserId { get; set; }
 
         [JsonProperty("visible_to")]
@@ -33,10 +36,10 @@ namespace Pipedrive
         [JsonProperty("person_id")]
         public long? PersonId { get; set; }
 
-        [JsonProperty("organization_name")]
+        [JsonProperty("org_name")]
         public string OrganizationName { get; set; }
 
-        [JsonProperty("organization_id")]
+        [JsonProperty("org_id")]
         public long? OrganizationId { get; set; }
 
         [JsonProperty("formatted_value")]
