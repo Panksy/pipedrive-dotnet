@@ -127,11 +127,20 @@ namespace Pipedrive
             return new Uri($"deals/{id}/flow", UriKind.Relative);
         }
 
-        /// <summary>
-        /// Returns the <see cref="Uri"/> for all the followers of the specified deal.
-        /// </summary>
-        /// <param name="id">The id of the deal</param>
-        public static Uri DealFollowers(long id)
+		/// <summary>
+		/// Returns the <see cref="Uri"/> for merging the specified deal.
+		/// </summary>
+		/// <param name="id">The id of the deal</param>
+		public static Uri DealMerge(long id)
+		{
+			return new Uri($"deals/{id}/merge", UriKind.Relative);
+		}
+
+		/// <summary>
+		/// Returns the <see cref="Uri"/> for all the followers of the specified deal.
+		/// </summary>
+		/// <param name="id">The id of the deal</param>
+		public static Uri DealFollowers(long id)
         {
             return new Uri($"deals/{id}/followers", UriKind.Relative);
         }

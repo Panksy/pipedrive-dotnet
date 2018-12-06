@@ -94,7 +94,14 @@ namespace Pipedrive
             return ApiConnection.Put<Deal>(ApiUrls.Deal(id), data);
         }
 
-        public Task Delete(long id)
+		public Task<SimpleDeal> Merge(long id, long merge_with_id)
+		{
+			var data = new DealMerge() { MergeWithId= merge_with_id };
+			return ApiConnection.Put<SimpleDeal>(ApiUrls.DealMerge(id), data);
+		}
+
+
+		public Task Delete(long id)
         {
             return ApiConnection.Delete(ApiUrls.Deal(id));
         }

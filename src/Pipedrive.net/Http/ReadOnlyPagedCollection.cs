@@ -22,7 +22,7 @@ namespace Pipedrive.Internal
             if (response != null)
             {
                 _info = response.HttpResponse.ApiInfo;
-				Pagination = response.AdditionalData.Pagination;
+				Pagination = response.AdditionalData!= null ? response.AdditionalData.Pagination : null;
             }
         }
 

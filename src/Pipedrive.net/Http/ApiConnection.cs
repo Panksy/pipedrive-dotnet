@@ -173,7 +173,7 @@ namespace Pipedrive
 			var items = new List<T>();
 			items.AddRange(page);
 
-			if (page.Pagination.MoreItemsInCollection)
+			if (page.Pagination != null && page.Pagination.MoreItemsInCollection)
 			{
 				parameters["start"] = page.Pagination.NextStart.ToString();
 				while ((page = await GetPage<T>(uri, parameters, accepts).ConfigureAwait(false)).Pagination.MoreItemsInCollection)
@@ -198,7 +198,7 @@ namespace Pipedrive
 			
 			items.AddRange(page);
 
-			if (page.Pagination.MoreItemsInCollection)
+			if (page.Pagination != null && page.Pagination.MoreItemsInCollection)
 			{
 				var previousPageStart = page.Pagination.NextStart;
 				options.StartPage = page.Pagination.NextStart;

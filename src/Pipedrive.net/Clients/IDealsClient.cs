@@ -23,8 +23,9 @@ namespace Pipedrive
         Task<Deal> Create(NewDeal data);
 
         Task<Deal> Edit(long id, DealUpdate data);
+		Task<SimpleDeal> Merge(long id, long merge_with_id);
 
-        Task Delete(long id);
+		Task Delete(long id);
 
         Task<IReadOnlyList<DealUpdateFlow>> GetUpdates(long dealId, DealUpdateFilters filters);
 
