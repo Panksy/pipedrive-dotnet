@@ -38,5 +38,5 @@ namespace Pipedrive
 
         [JsonProperty("formatted_value")]
         public string FormattedValue { get; set; }
-    }
+	}
 }
