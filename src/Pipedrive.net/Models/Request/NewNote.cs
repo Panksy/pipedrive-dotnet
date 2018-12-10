@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace Pipedrive
 {
@@ -16,7 +17,10 @@ namespace Pipedrive
         [JsonProperty("org_id")]
         public long? OrgId { get; set; }
 
-        [JsonProperty("pinned_to_deal_flag")]
+		[JsonProperty("add_time")]
+		public DateTime AddTime { get; set; }
+		
+		[JsonProperty("pinned_to_deal_flag")]
         public bool PinnedToDealFlag { get; set; }
 
         [JsonProperty("pinned_to_organization_flag")]
