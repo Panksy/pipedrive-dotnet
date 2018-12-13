@@ -187,10 +187,12 @@ namespace Pipedrive
         /// </summary>
         Uri BaseAddress { get; }
 
-        /// <summary>
-        /// Set the Pipedrive API request timeout.
-        /// </summary>
-        /// <param name="timeout">The Timeout value</param>
-        void SetRequestTimeout(TimeSpan timeout);
+		String ApiToken { get; }
+
+		/// <summary>
+		/// Set the Pipedrive API request timeout.
+		/// </summary>
+		/// <param name="timeout">The Timeout value</param>
+		void SetRequestTimeout(TimeSpan timeout);
     }
 }
