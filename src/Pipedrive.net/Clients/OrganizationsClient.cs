@@ -63,6 +63,21 @@ namespace Pipedrive
             return ApiConnection.Get<Organization>(ApiUrls.Organization(id));
         }
 
+		public Task<IReadOnlyList<Deal>> GetDeals(long id, DealFilters filters)
+		{
+			Ensure.ArgumentNotNull(filters, nameof(filters));
+			var parameters = filters.Parameters;
+			var options = new ApiOptions
+			{
+				PageSize = 500,
+			};
+
+			
+
+			return ApiConnection.GetAll<Deal>(ApiUrls.OrganizationDeals(id), parameters, options);
+		}
+		
+
 		public Task<IReadOnlyList<Deal>> GetDeals(long id)
 		{
 			var options = new ApiOptions
