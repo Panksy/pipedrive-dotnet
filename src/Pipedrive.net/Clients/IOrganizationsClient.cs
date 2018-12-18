@@ -20,6 +20,8 @@ namespace Pipedrive
 
 		Task<IReadOnlyList<Deal>> GetDeals(long id);
 
+		Task<IReadOnlyList<Person>> GetPersons(long id);
+
 		Task<IReadOnlyList<Deal>> GetDeals(long id, DealFilters filters);
 
 		Task<Organization> Create(NewOrganization data);

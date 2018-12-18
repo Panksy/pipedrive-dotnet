@@ -88,6 +88,17 @@ namespace Pipedrive
 			return ApiConnection.GetAll<Deal>(ApiUrls.OrganizationDeals(id), options);
 		}
 
+		public Task<IReadOnlyList<Person>> GetPersons(long id)
+		{
+			var options = new ApiOptions
+			{
+				PageSize = 500
+			};
+
+			return ApiConnection.GetAll<Person>(ApiUrls.OrganizationPersons(id), options);
+		}
+
+
 
 		public Task<Organization> Create(NewOrganization data)
         {
