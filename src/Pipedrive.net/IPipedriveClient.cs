@@ -7,8 +7,9 @@ namespace Pipedrive
         void SetRequestTimeout(TimeSpan timeout);
 
         IConnection Connection { get; }
+		string AccountSubdomain { get; }
 
-        IActivitiesClient Activity { get; }
+		IActivitiesClient Activity { get; }
 
         IActivityFieldsClient ActivityField { get; }
 

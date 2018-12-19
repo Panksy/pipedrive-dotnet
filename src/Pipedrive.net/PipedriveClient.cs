@@ -8,6 +8,9 @@ namespace Pipedrive
     /// </summary>
     public class PipedriveClient : IPipedriveClient
     {
+		private string _accountSubdomain = "";
+
+
         /// <summary>
         /// Create a new instance of the Pipedrive API v1 client pointing to the specified baseAddress.
         /// </summary>
@@ -23,11 +26,19 @@ namespace Pipedrive
         {
         }
 
-        /// <summary>
-        /// Create a new instance of the Pipedrive API v1 client using the specified connection.
-        /// </summary>
-        /// <param name="connection">The underlying <seealso cref="IConnection"/> used to make requests</param>
-        public PipedriveClient(IConnection connection)
+		public PipedriveClient(ProductHeaderValue productInformation, string accountName, string apiToken)
+			: this(new Connection(productInformation, FixUpBaseUri(accountName), apiToken))
+		{
+			_accountSubdomain = accountName;
+		}
+
+
+
+		/// <summary>
+		/// Create a new instance of the Pipedrive API v1 client using the specified connection.
+		/// </summary>
+		/// <param name="connection">The underlying <seealso cref="IConnection"/> used to make requests</param>
+		public PipedriveClient(IConnection connection)
         {
             Ensure.ArgumentNotNull(connection, nameof(connection));
 
@@ -81,10 +92,18 @@ namespace Pipedrive
             get { return Connection.BaseAddress; }
         }
 
-        /// <summary>
-        /// Provides a client connection to make rest requests to HTTP endpoints.
-        /// </summary>
-        public IConnection Connection { get; private set; }
+		/// <summary>
+		/// The base address of the Pipedrive API.
+		/// </summary>
+		public string AccountSubdomain
+		{
+			get { return _accountSubdomain; }
+		}
+
+		/// <summary>
+		/// Provides a client connection to make rest requests to HTTP endpoints.
+		/// </summary>
+		public IConnection Connection { get; private set; }
 
         /// <summary>
         /// Access Pipedrive's Activity API.
@@ -225,5 +244,17 @@ namespace Pipedrive
 
             return new Uri(uri, new Uri("/v1/", UriKind.Relative));
         }
-    }
+
+		static Uri FixUpBaseUri(string uriSubDomain)
+		{
+			Ensure.ArgumentNotNull(uriSubDomain, nameof(uriSubDomain));
+
+			var uri = new Uri($"https://{uriSubDomain}.pipedrive.com");
+
+			return new Uri(uri, new Uri("/v1/", UriKind.Relative));
+		}
+
+
+
+	}
 }
