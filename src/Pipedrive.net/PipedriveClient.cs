@@ -60,7 +60,8 @@ namespace Pipedrive
 			Stage = new StagesClient(apiConnection);
             User = new UsersClient(apiConnection);
             Webhook = new WebhooksClient();
-        }
+			MailMessage = new MailMessagesClient(apiConnection);
+		}
 
         /// <summary>
         /// Set the Pipedrive API request timeout.
@@ -161,13 +162,16 @@ namespace Pipedrive
         /// </remarks>
         public IFilesClient File { get; private set; }
 
-        /// <summary>
-        /// Access Pipedrive's Note API.
-        /// </summary>
-        /// <remarks>
-        /// Refer to the API documentation for more information: https://developers.pipedrive.com/docs/api/v1/#!/Notes
-        /// </remarks>
-        public INotesClient Note { get; private set; }
+
+		public IMailMessagesClient MailMessage { get; private set; }
+
+		/// <summary>
+		/// Access Pipedrive's Note API.
+		/// </summary>
+		/// <remarks>
+		/// Refer to the API documentation for more information: https://developers.pipedrive.com/docs/api/v1/#!/Notes
+		/// </remarks>
+		public INotesClient Note { get; private set; }
 
         /// <summary>
         /// Access Pipedrive's Organization API.

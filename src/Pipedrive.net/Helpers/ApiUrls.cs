@@ -37,11 +37,13 @@ namespace Pipedrive
 
 		static readonly Uri _stagesUrl = new Uri("stages", UriKind.Relative);
 
-        /// <summary>
-        /// Returns the <see cref="Uri"/> that returns all of the activities.
-        /// </summary>
-        /// <returns></returns>
-        public static Uri Activities()
+		static readonly Uri _mailMessagesUrl = new Uri("mailbox/mailMessages", UriKind.Relative);
+
+		/// <summary>
+		/// Returns the <see cref="Uri"/> that returns all of the activities.
+		/// </summary>
+		/// <returns></returns>
+		public static Uri Activities()
         {
             return _activitiesUrl;
         }
@@ -189,12 +191,19 @@ namespace Pipedrive
         {
             return new Uri($"files/{id}", UriKind.Relative);
         }
-
-        /// <summary>
-        /// Returns the <see cref="Uri"/> that returns all of the notes in response to a GET request.
-        /// </summary>
-        /// <returns></returns>
-        public static Uri Notes()
+		/// <summary>
+		/// Returns the <see cref="Uri"/> for the specified mail message.
+		/// </summary>
+		/// <param name="id">The id of the mail message</param>
+		public static Uri MailMessage(long id)
+		{
+			return new Uri($"{_mailMessagesUrl}/{id}", UriKind.Relative);
+		}
+		/// <summary>
+		/// Returns the <see cref="Uri"/> that returns all of the notes in response to a GET request.
+		/// </summary>
+		/// <returns></returns>
+		public static Uri Notes()
         {
             return _notesUrl;
         }
