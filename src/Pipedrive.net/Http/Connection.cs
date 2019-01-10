@@ -410,6 +410,7 @@ namespace Pipedrive
 
             if ((int)response.StatusCode >= 400 && (int)response.StatusCode != 410) // Pipedrive uses 410 (Gone) for successful delete
             {
+				Console.WriteLine($"API Exception {response.StatusCode}");
                 throw new ApiException(response);
             }
         }

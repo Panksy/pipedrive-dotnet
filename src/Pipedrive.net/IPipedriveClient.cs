@@ -23,7 +23,9 @@ namespace Pipedrive
 
         IFilesClient File { get; }
 
-        INotesClient Note { get; }
+		IMailMessagesClient MailMessage { get; }
+
+		INotesClient Note { get; }
 
         IOrganizationsClient Organization { get; }
 
