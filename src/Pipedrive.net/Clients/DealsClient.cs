@@ -95,7 +95,7 @@ namespace Pipedrive
         }
 
 
-		public Task<Deal> Edit(long id, DealFieldValueUpdate data)
+		public Task<Deal> Edit(long id, CustomFieldValueUpdate data)
 		{
 			Ensure.ArgumentNotNull(data, nameof(data));
 

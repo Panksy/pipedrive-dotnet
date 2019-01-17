@@ -23,7 +23,7 @@ namespace Pipedrive
         Task<Deal> Create(NewDeal data);
 
         Task<Deal> Edit(long id, DealUpdate data);
-		Task<Deal> Edit(long id, DealFieldValueUpdate data);
+		Task<Deal> Edit(long id, CustomFieldValueUpdate data);
 		Task<SimpleDeal> Merge(long id, long merge_with_id);
 
 		Task Delete(long id);

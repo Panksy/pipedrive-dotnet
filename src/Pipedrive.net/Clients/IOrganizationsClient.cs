@@ -29,7 +29,8 @@ namespace Pipedrive
 		Task<Organization> Create(NewOrganization data);
 
         Task<Organization> Edit(long id, OrganizationUpdate data);
+		Task<Organization> Edit(long id, CustomFieldValueUpdate data);
 
-        Task Delete(long id);
+		Task Delete(long id);
     }
 }

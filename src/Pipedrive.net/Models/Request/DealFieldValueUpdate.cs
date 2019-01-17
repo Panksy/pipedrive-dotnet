@@ -7,9 +7,9 @@ using System.Collections.Generic;
 namespace Pipedrive
 {
 	[JsonConverter(typeof(CustomFieldConverter))]
-	public class DealFieldValueUpdate : IEntityWithCustomFields
+	public class CustomFieldValueUpdate : IEntityWithCustomFields
 	{
-		public DealFieldValueUpdate() {
+		public CustomFieldValueUpdate() {
 			CustomFields = new Dictionary<string, ICustomField>();
 		}
 		[JsonIgnore]

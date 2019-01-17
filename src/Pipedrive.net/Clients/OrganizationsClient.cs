@@ -124,8 +124,13 @@ namespace Pipedrive
 
             return ApiConnection.Put<Organization>(ApiUrls.Organization(id), data);
         }
+		public Task<Organization> Edit(long id, CustomFieldValueUpdate data)
+		{
+			Ensure.ArgumentNotNull(data, nameof(data));
 
-        public Task Delete(long id)
+			return ApiConnection.Put<Organization>(ApiUrls.Organization(id), data);
+		}
+		public Task Delete(long id)
         {
             return ApiConnection.Delete(ApiUrls.Organization(id));
         }
