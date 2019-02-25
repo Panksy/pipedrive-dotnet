@@ -20,20 +20,20 @@ namespace Pipedrive.Internal
         {
             var customFields = new Dictionary<string, ICustomField>();
 
-            var propertiesSkipped = new List<string>();
             var jObject = JObject.Load(reader);
             foreach (var property in jObject.Properties())
             {
-                try
+                if (property.Name.Length == 40)
                 {
-                    if (property.Name.Length == 40)
+                    var child = property.Children().FirstOrDefault();
+                    var linkedProperties = jObject
+                        .Properties()
+                        .Where(p => p.Name.StartsWith(property.Name))
+                        .ToDictionary(t => t.Name, t => t.Value);
+                    DateTime datetime;
+
+                    try
                     {
-                        var child = property.Children().FirstOrDefault();
-                        var linkedProperties = jObject
-                            .Properties()
-                            .Where(p => p.Name.StartsWith(property.Name))
-                            .ToDictionary(t => t.Name, t => t.Value);
-                        DateTime datetime;
 
                         switch (child.Type)
                         {
@@ -133,10 +133,11 @@ namespace Pipedrive.Internal
                                 customFields.Add(property.Name, null);
                                 break;
                         }
+
                     }
-                }
-                catch (Exception ex) {
-                    propertiesSkipped.Add($"skipped a model {objectType} {ex.Message}");
+                    catch (Exception ex) {
+                       // Console.WriteLine($"Prpoerty {property.Name} skipped - {ex.Message} ");
+                    }
                 }
             }
 				IEntityWithCustomFields model = (IEntityWithCustomFields)Activator.CreateInstance(objectType);
@@ -146,9 +147,7 @@ namespace Pipedrive.Internal
 				model.CustomFields = customFields;
 			}
 			catch (Exception ex) {
-                
-
-                Console.WriteLine($"skipped a model {objectType} "+ jObject.ToString() + " "+ex.Message);
+				Console.WriteLine($"skipped a model {objectType} "+ jObject.ToString() + " "+ex.Message);
 			}
 
 			try
@@ -160,11 +159,8 @@ namespace Pipedrive.Internal
 			{
 				Console.WriteLine("skipped a model " + ex.Message);
 			}
-            /*
-            if (propertiesSkipped.Any())
-                Console.WriteLine($"{propertiesSkipped.Count} properties were skipped e.g. {propertiesSkipped.FirstOrDefault()} ");
-                */
-            return model;
+
+			return model;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

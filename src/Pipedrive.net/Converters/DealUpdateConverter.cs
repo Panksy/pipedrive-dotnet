@@ -36,7 +36,12 @@ namespace Pipedrive.Internal
                             dealUpdateEntity = dataObject.ToObject<MailMessage>();
                             break;
                         case "file":
-                            dealUpdateEntity = dataObject.ToObject<File>();
+							try
+							{
+								dealUpdateEntity = dataObject.ToObject<File>();
+							}
+							catch (Exception ex)
+							{ Console.WriteLine("File object issue - ignoring the file"); }
                             break;
                         case "dealChange":
                             dealUpdateEntity = dataObject.ToObject<DealChange>();
