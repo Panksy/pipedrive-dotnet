@@ -35,7 +35,9 @@ namespace Pipedrive
 
 		static readonly Uri _pipelinesUrl = new Uri("pipelines", UriKind.Relative);
 
-		static readonly Uri _stagesUrl = new Uri("stages", UriKind.Relative);
+        static readonly Uri _recentsUrl = new Uri("recents", UriKind.Relative);
+
+        static readonly Uri _stagesUrl = new Uri("stages", UriKind.Relative);
 
 		static readonly Uri _mailMessagesUrl = new Uri("mailbox/mailMessages", UriKind.Relative);
 
@@ -357,12 +359,19 @@ namespace Pipedrive
 		{
 			return new Uri($"pipelines/{id}/deals", UriKind.Relative);
 		}
-
-		/// <summary>
-		/// Returns the <see cref="Uri"/> that returns all of the stages in response to a GET request.
-		/// </summary>
-		/// <returns></returns>
-		public static Uri Stages()
+        /// <summary>
+        /// Returns the <see cref="Uri"/> that returns all of the stages in response to a GET request.
+        /// </summary>
+        /// <returns></returns>
+        public static Uri Recents()
+        {
+            return _recentsUrl;
+        }
+        /// <summary>
+        /// Returns the <see cref="Uri"/> that returns all of the stages in response to a GET request.
+        /// </summary>
+        /// <returns></returns>
+        public static Uri Stages()
         {
             return _stagesUrl;
         }

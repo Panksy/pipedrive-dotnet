@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Pipedrive
 {
     [JsonConverter(typeof(CustomFieldConverter))]
-    public class Deal : IEntityWithCustomFields
+    public class Deal : IEntityWithCustomFields, IRecentsEntity
     {
         public long Id { get; set; }
 
