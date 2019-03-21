@@ -423,7 +423,7 @@ namespace Pipedrive
         static Exception GetExceptionForForbidden(IResponse response)
         {
             string body = response.Body as string ?? "";
-
+            Console.WriteLine($"Exception - GetExceptionForForbidden {body}");
             if (body.Contains("rate limit exceeded"))
             {
                 return new RateLimitExceededException(response);
