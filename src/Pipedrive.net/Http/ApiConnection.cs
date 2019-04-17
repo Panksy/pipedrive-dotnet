@@ -99,9 +99,9 @@ namespace Pipedrive
         /// <param name="uri">URI of the API resource to get</param>
         /// <returns><see cref="IReadOnlyList{T}"/> of the The API resources in the list.</returns>
         /// <exception cref="ApiException">Thrown when an API error occurs.</exception>
-        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri)
+        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri)
         {
-            return GetAll<T>(uri, ApiOptions.None);
+            return await GetAll<T>(uri, ApiOptions.None);
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace Pipedrive
         /// <param name="options">Options for changing the API response</param>
         /// <returns><see cref="IReadOnlyList{T}"/> of the The API resources in the list.</returns>
         /// <exception cref="ApiException">Thrown when an API error occurs.</exception>
-        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri, ApiOptions options)
+        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri, ApiOptions options)
         {
-            return GetAll<T>(uri, null, null, options);
+            return await GetAll<T>(uri, null, null, options);
         }
 
         /// <summary>
