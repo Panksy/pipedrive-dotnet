@@ -19,9 +19,9 @@ namespace Pipedrive
         {
         }
 
-        public Task<IReadOnlyList<Pipeline>> GetAll()
+        public async Task<IReadOnlyList<Pipeline>> GetAll()
         {
-			return ApiConnection.GetAll<Pipeline>(ApiUrls.Pipelines());
+			return await ApiConnection.GetAll<Pipeline>(ApiUrls.Pipelines());
         }
 
 		public Task<Pipeline> Get(long id)
