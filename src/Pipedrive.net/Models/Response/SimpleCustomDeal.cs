@@ -33,7 +33,6 @@ namespace Pipedrive
         [JsonProperty("person_name")]
         public string PersonName { get; set; }
 
-
         [JsonProperty("owner_name")]
         public string OwnerName { get; set; }
 
@@ -42,9 +41,6 @@ namespace Pipedrive
 
         [JsonProperty("org_name")]
         public string OrganizationName { get; set; }
-
-        [JsonProperty("owner_name")]
-        public string OwnerName { get; set; }       
 
         [JsonProperty("org_id")]
         public long? OrganizationId { get; set; }
