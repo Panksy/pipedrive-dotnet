@@ -33,6 +33,10 @@ namespace Pipedrive
         [JsonProperty("person_name")]
         public string PersonName { get; set; }
 
+
+        [JsonProperty("owner_name")]
+        public string OwnerName { get; set; }
+
         [JsonProperty("person_id")]
         public long? PersonId { get; set; }
 
