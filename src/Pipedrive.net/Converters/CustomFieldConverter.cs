@@ -32,135 +32,112 @@ namespace Pipedrive.Internal
                         .ToDictionary(t => t.Name, t => t.Value);
                     DateTime datetime;
 
-                    try
+                    switch (child.Type)
                     {
-
-                        switch (child.Type)
-                        {
-                            case JTokenType.String:
-                                // Time/Time range
-                                if (linkedProperties.Any(p => p.Key == $"{property.Name}_timezone_id"))
+                        case JTokenType.String:
+                            // Time/Time range
+                            if (linkedProperties.Any(p => p.Key == $"{property.Name}_timezone_id"))
+                            {
+                                // Time range
+                                if (linkedProperties.Any(p => p.Key == $"{property.Name}_until"))
                                 {
-                                    // Time range
-                                    if (linkedProperties.Any(p => p.Key == $"{property.Name}_until"))
-                                    {
-                                        customFields.Add(property.Name, new TimeRangeCustomField(
-                                            TimeSpan.Parse((string)property.Value),
-                                            TimeSpan.Parse((string)linkedProperties[$"{property.Name}_until"]),
-                                            (int)linkedProperties[$"{property.Name}_timezone_id"]
-                                            ));
-                                    }
-                                    // Time
-                                    else
-                                    {
-                                        customFields.Add(property.Name, new TimeCustomField(
-                                            TimeSpan.Parse((string)property.Value),
-                                            (int)linkedProperties[$"{property.Name}_timezone_id"]
-                                            ));
-                                    }
+                                    customFields.Add(property.Name, new TimeRangeCustomField(
+                                        TimeSpan.Parse((string)property.Value),
+                                        TimeSpan.Parse((string)linkedProperties[$"{property.Name}_until"]),
+                                        (int)linkedProperties[$"{property.Name}_timezone_id"]
+                                        ));
                                 }
-                                // Date range
-                                else if (linkedProperties.Any(p => p.Key == $"{property.Name}_until"))
-                                {
-                                    customFields.Add(
-                                        property.Name,
-                                        new DateRangeCustomField(DateTime.Parse((string)property.Value),
-                                        DateTime.Parse((string)linkedProperties[$"{property.Name}_until"])));
-                                }
-                                // Address
-                                else if (linkedProperties.Any(p => p.Key == $"{property.Name}_formatted_address"))
-                                {
-                                    customFields.Add(
-                                        property.Name,
-                                        new AddressCustomField(
-                                            (string)property.Value,
-                                            (string)linkedProperties[$"{property.Name}_subpremise"],
-                                            (string)linkedProperties[$"{property.Name}_street_number"],
-                                            (string)linkedProperties[$"{property.Name}_route"],
-                                            (string)linkedProperties[$"{property.Name}_sublocality"],
-                                            (string)linkedProperties[$"{property.Name}_locality"],
-                                            (string)linkedProperties[$"{property.Name}_admin_area_level_1"],
-                                            (string)linkedProperties[$"{property.Name}_admin_area_level_2"],
-                                            (string)linkedProperties[$"{property.Name}_country"],
-                                            (string)linkedProperties[$"{property.Name}_postal_code"],
-                                            (string)linkedProperties[$"{property.Name}_formatted_address"]
-                                        )
-                                    );
-                                }
-                                else if (DateTime.TryParseExact((string)property.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out datetime))
-                                {
-                                    customFields.Add(property.Name, new DateCustomField(datetime));
-                                }
+                                // Time
                                 else
                                 {
-                                    customFields.Add(property.Name, new StringCustomField((string)property.Value));
+                                    customFields.Add(property.Name, new TimeCustomField(
+                                        TimeSpan.Parse((string)property.Value),
+                                        (int)linkedProperties[$"{property.Name}_timezone_id"]
+                                        ));
                                 }
-                                break;
-                            case JTokenType.Float:
-                                // Monetary
-                                if (linkedProperties.Any(p => p.Key == $"{property.Name}_currency"))
-                                {
-                                    customFields.Add(property.Name, new MonetaryCustomField((decimal)property.Value, (string)linkedProperties[$"{property.Name}_currency"]));
-                                }
-                                // Decimal
-                                else
-                                {
-                                    customFields.Add(property.Name, new DecimalCustomField((decimal)property.Value));
-                                }
-                                break;
-                            case JTokenType.Integer:
-                                customFields.Add(property.Name, new IntCustomField((int)property.Value));
-                                break;
-                            case JTokenType.Object:
-                                // User
-                                if (((JObject)child).Properties().Any(p => p.Name == "has_pic"))
-                                {
-                                    customFields.Add(property.Name, property.Value.ToObject<UserCustomField>());
-                                }
-                                // Organization
-                                if (((JObject)child).Properties().Any(p => p.Name == "people_count"))
-                                {
-                                    customFields.Add(property.Name, property.Value.ToObject<OrganizationCustomField>());
-                                }
-                                // Person
-                                if (((JObject)child).Properties().Any(p => p.Name == "phone"))
-                                {
-                                    customFields.Add(property.Name, property.Value.ToObject<PersonCustomField>());
-                                }
-                                break;
-                            case JTokenType.Null:
-                            case JTokenType.Undefined:
-                                customFields.Add(property.Name, null);
-                                break;
-                        }
-
-                    }
-                    catch (Exception ex) {
-                       // Console.WriteLine($"Prpoerty {property.Name} skipped - {ex.Message} ");
+                            }
+                            // Date range
+                            else if (linkedProperties.Any(p => p.Key == $"{property.Name}_until"))
+                            {
+                                DateTime.TryParseExact((string)property.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var datetimeStart);
+                                DateTime.TryParseExact((string)linkedProperties[$"{property.Name}_until"], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var datetimeEnd);
+                                customFields.Add(
+                                    property.Name,
+                                    new DateRangeCustomField(datetimeStart, datetimeEnd));
+                            }
+                            // Address
+                            else if (linkedProperties.Any(p => p.Key == $"{property.Name}_formatted_address"))
+                            {
+                                customFields.Add(
+                                    property.Name,
+                                    new AddressCustomField(
+                                        (string)property.Value,
+                                        (string)linkedProperties[$"{property.Name}_subpremise"],
+                                        (string)linkedProperties[$"{property.Name}_street_number"],
+                                        (string)linkedProperties[$"{property.Name}_route"],
+                                        (string)linkedProperties[$"{property.Name}_sublocality"],
+                                        (string)linkedProperties[$"{property.Name}_locality"],
+                                        (string)linkedProperties[$"{property.Name}_admin_area_level_1"],
+                                        (string)linkedProperties[$"{property.Name}_admin_area_level_2"],
+                                        (string)linkedProperties[$"{property.Name}_country"],
+                                        (string)linkedProperties[$"{property.Name}_postal_code"],
+                                        (string)linkedProperties[$"{property.Name}_formatted_address"]
+                                    )
+                                );
+                            }
+                            else if (DateTime.TryParseExact((string)property.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out datetime))
+                            {
+                                customFields.Add(property.Name, new DateCustomField(datetime));
+                            }
+                            else
+                            {
+                                customFields.Add(property.Name, new StringCustomField((string)property.Value));
+                            }
+                            break;
+                        case JTokenType.Float:
+                            // Monetary
+                            if (linkedProperties.Any(p => p.Key == $"{property.Name}_currency"))
+                            {
+                                customFields.Add(property.Name, new MonetaryCustomField((decimal)property.Value, (string)linkedProperties[$"{property.Name}_currency"]));
+                            }
+                            // Decimal
+                            else
+                            {
+                                customFields.Add(property.Name, new DecimalCustomField((decimal)property.Value));
+                            }
+                            break;
+                        case JTokenType.Integer:
+                            customFields.Add(property.Name, new IntCustomField((int)property.Value));
+                            break;
+                        case JTokenType.Object:
+                            // User
+                            if (((JObject)child).Properties().Any(p => p.Name == "has_pic"))
+                            {
+                                customFields.Add(property.Name, property.Value.ToObject<UserCustomField>());
+                            }
+                            // Organization
+                            if (((JObject)child).Properties().Any(p => p.Name == "people_count"))
+                            {
+                                customFields.Add(property.Name, property.Value.ToObject<OrganizationCustomField>());
+                            }
+                            // Person
+                            if (((JObject)child).Properties().Any(p => p.Name == "phone"))
+                            {
+                                customFields.Add(property.Name, property.Value.ToObject<PersonCustomField>());
+                            }
+                            break;
+                        case JTokenType.Null:
+                        case JTokenType.Undefined:
+                            customFields.Add(property.Name, null);
+                            break;
                     }
                 }
             }
-				IEntityWithCustomFields model = (IEntityWithCustomFields)Activator.CreateInstance(objectType);
-			try
-			{
-				serializer.Populate(jObject.CreateReader(), model);
-				model.CustomFields = customFields;
-			}
-			catch (Exception ex) {
-				Console.WriteLine($"skipped a model {objectType} "+ jObject.ToString() + " "+ex.Message);
-			}
+            IEntityWithCustomFields model = (IEntityWithCustomFields)Activator.CreateInstance(objectType);
+            serializer.Populate(jObject.CreateReader(), model);
+            model.CustomFields = customFields;
 
-			try
-			{
-			
-				model.CustomFields = customFields;
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("skipped a model " + ex.Message);
-			}
-
-			return model;
+            return model;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

@@ -70,8 +70,8 @@ namespace Pipedrive
         {
             Ensure.ArgumentNotNull(uri, nameof(uri));
 
-            var response = await Connection.Get<T>(uri, parameters, null).ConfigureAwait(false);
-            return response.Body;
+            var response = await Connection.Get<JsonResponse<T>>(uri, parameters, null).ConfigureAwait(false);
+            return response.Body.Data;
         }
 
         /// <summary>
@@ -88,8 +88,8 @@ namespace Pipedrive
             Ensure.ArgumentNotNull(uri, nameof(uri));
             Ensure.ArgumentNotNull(accepts, nameof(accepts));
 
-            var response = await Connection.Get<T>(uri, parameters, accepts).ConfigureAwait(false);
-            return response.Body;
+            var response = await Connection.Get<JsonResponse<T>>(uri, parameters, accepts).ConfigureAwait(false);
+            return response.Body.Data;
         }
 
         /// <summary>
@@ -99,9 +99,9 @@ namespace Pipedrive
         /// <param name="uri">URI of the API resource to get</param>
         /// <returns><see cref="IReadOnlyList{T}"/> of the The API resources in the list.</returns>
         /// <exception cref="ApiException">Thrown when an API error occurs.</exception>
-        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri)
+        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri)
         {
-            return await GetAll<T>(uri, ApiOptions.None);
+            return GetAll<T>(uri, ApiOptions.None);
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace Pipedrive
         /// <param name="options">Options for changing the API response</param>
         /// <returns><see cref="IReadOnlyList{T}"/> of the The API resources in the list.</returns>
         /// <exception cref="ApiException">Thrown when an API error occurs.</exception>
-        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri, ApiOptions options)
+        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri, ApiOptions options)
         {
-            return await GetAll<T>(uri, null, null, options);
+            return GetAll<T>(uri, null, null, options);
         }
 
         /// <summary>
@@ -166,57 +166,21 @@ namespace Pipedrive
         /// <param name="accepts">Accept header to use for the API request</param>
         /// <returns><see cref="IReadOnlyList{T}"/> of the The API resources in the list.</returns>
         /// <exception cref="ApiException">Thrown when an API error occurs.</exception>
-        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts)
+        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts)
         {
             Ensure.ArgumentNotNull(uri, nameof(uri));
-			var page = await GetPage<T>(uri, parameters, accepts);
-			var items = new List<T>();
-			items.AddRange(page);
 
-			if (page.Pagination != null && page.Pagination.MoreItemsInCollection)
-			{
-				parameters["start"] = page.Pagination.NextStart.ToString();
-				while ((page = await GetPage<T>(uri, parameters, accepts).ConfigureAwait(false)).Pagination.MoreItemsInCollection)
-				{
-					items.AddRange(page);
-					parameters["start"] = page.Pagination.NextStart.ToString();
-				}
-			}
-			return items;
-			//return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts).ConfigureAwait(false), uri);
-		}
+            return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts).ConfigureAwait(false), uri);
+        }
 
-        public async Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts, ApiOptions options)
+        public Task<IReadOnlyList<T>> GetAll<T>(Uri uri, IDictionary<string, string> parameters, string accepts, ApiOptions options)
         {
             Ensure.ArgumentNotNull(uri, nameof(uri));
             Ensure.ArgumentNotNull(options, nameof(options));
 
             parameters = Pagination.Setup(parameters, options);
 
-			var page = await GetPage<T>(uri, parameters, accepts, options);
-			var items = new List<T>();
-			
-			items.AddRange(page);
-
-			if (page.Pagination != null && page.Pagination.MoreItemsInCollection)
-			{
-				var previousPageStart = page.Pagination.NextStart;
-				options.StartPage = page.Pagination.NextStart;
-				parameters["start"] = page.Pagination.NextStart.ToString();
-				while ((page = await GetPage<T>(uri, parameters, accepts, options).ConfigureAwait(false)).Pagination.MoreItemsInCollection)
-				{
-					items.AddRange(page);
-					options.StartPage = page.Pagination.NextStart;
-					parameters["start"] = page.Pagination.NextStart.ToString();
-				}
-				// Add the last ones that were left in the last page
-				items.AddRange(page);
-			}
-		
-			return items;
-
-
-			//return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts, options).ConfigureAwait(false), uri);
+            return _pagination.GetAllPages(async () => await GetPage<T>(uri, parameters, accepts, options).ConfigureAwait(false), uri);
         }
 
         /// <summary>
@@ -243,8 +207,8 @@ namespace Pipedrive
         {
             Ensure.ArgumentNotNull(uri, nameof(uri));
 
-            var response = await Connection.Post<T>(uri).ConfigureAwait(false);
-            return response.Body;
+            var response = await Connection.Post<JsonResponse<T>>(uri).ConfigureAwait(false);
+            return response.Body.Data;
         }
 
         /// <summary>
@@ -292,8 +256,8 @@ namespace Pipedrive
             Ensure.ArgumentNotNull(uri, nameof(uri));
             Ensure.ArgumentNotNull(data, nameof(data));
 
-            var response = await Connection.Post<T>(uri, data, accepts, contentType).ConfigureAwait(false);
-            return response.Body;
+            var response = await Connection.Post<JsonResponse<T>>(uri, data, accepts, contentType).ConfigureAwait(false);
+            return response.Body.Data;
         }
 
         public async Task<T> Post<T>(Uri uri, object data, string accepts, string contentType, TimeSpan timeout)
@@ -301,8 +265,8 @@ namespace Pipedrive
             Ensure.ArgumentNotNull(uri, nameof(uri));
             Ensure.ArgumentNotNull(data, nameof(data));
 
-            var response = await Connection.Post<T>(uri, data, accepts, contentType, timeout).ConfigureAwait(false);
-            return response.Body;
+            var response = await Connection.Post<JsonResponse<T>>(uri, data, accepts, contentType, timeout).ConfigureAwait(false);
+            return response.Body.Data;
         }
 
         /// <summary>
@@ -330,9 +294,9 @@ namespace Pipedrive
             Ensure.ArgumentNotNull(uri, nameof(uri));
             Ensure.ArgumentNotNull(data, nameof(data));
 
-            var response = await Connection.Put<T>(uri, data).ConfigureAwait(false);
+            var response = await Connection.Put<JsonResponse<T>>(uri, data).ConfigureAwait(false);
 
-            return response.Body;
+            return response.Body.Data;
         }
 
         /// <summary>
@@ -388,9 +352,9 @@ namespace Pipedrive
             Ensure.ArgumentNotNull(uri, nameof(uri));
             Ensure.ArgumentNotNull(data, nameof(data));
 
-            var response = await Connection.Delete<T>(uri, data).ConfigureAwait(false);
+            var response = await Connection.Delete<JsonResponse<T>>(uri, data).ConfigureAwait(false);
 
-            return response.Body;
+            return response.Body.Data;
         }
 
         /// <summary>
@@ -407,9 +371,9 @@ namespace Pipedrive
             Ensure.ArgumentNotNull(data, nameof(data));
             Ensure.ArgumentNotNull(accepts, nameof(accepts));
 
-            var response = await Connection.Delete<T>(uri, data, accepts).ConfigureAwait(false);
+            var response = await Connection.Delete<JsonResponse<T>>(uri, data, accepts).ConfigureAwait(false);
 
-            return response.Body;
+            return response.Body.Data;
         }
 
         /// <summary>
@@ -453,11 +417,10 @@ namespace Pipedrive
         {
             Ensure.ArgumentNotNull(uri, nameof(uri));
 
-            var response = await Connection.Get<List<T>>(uri, parameters, accepts).ConfigureAwait(false);
-			
+            var response = await Connection.Get<JsonResponse<List<T>>>(uri, parameters, accepts).ConfigureAwait(false);
             return new ReadOnlyPagedCollection<T>(
                 response,
-                nextPageUri => Connection.Get<List<T>>(nextPageUri, parameters, accepts));
+                nextPageUri => Connection.Get<JsonResponse<List<T>>>(nextPageUri, parameters, accepts));
         }
 
         async Task<IReadOnlyPagedCollection<TU>> GetPage<TU>(
@@ -470,7 +433,7 @@ namespace Pipedrive
 
             var connection = Connection;
 
-            var response = await connection.Get<List<TU>>(uri, parameters, accepts).ConfigureAwait(false);
+            var response = await connection.Get<JsonResponse<List<TU>>>(uri, parameters, accepts).ConfigureAwait(false);
             return new ReadOnlyPagedCollection<TU>(
                 response,
                 nextPageUri =>
@@ -480,7 +443,7 @@ namespace Pipedrive
                         options);
 
                     return shouldContinue
-                        ? connection.Get<List<TU>>(nextPageUri, parameters, accepts)
+                        ? connection.Get<JsonResponse<List<TU>>>(nextPageUri, parameters, accepts)
                         : null;
                 });
         }

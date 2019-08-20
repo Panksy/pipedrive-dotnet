@@ -37,7 +37,6 @@ namespace Pipedrive
             string secondsValue;
             if (!response.Headers.TryGetValue("Retry-After", out secondsValue)) { return null; }
 
-            Console.WriteLine($"Retry Exception: retry seconds = {secondsValue}");
             int retrySeconds;
             if (!int.TryParse(secondsValue, out retrySeconds)) { return null; }
             if (retrySeconds < 0) { return null; }

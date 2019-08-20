@@ -1,5 +1,4 @@
 ﻿using Pipedrive.Helpers;
-using Pipedrive.Http;
 
 namespace Pipedrive.Internal
 {
@@ -30,27 +29,15 @@ namespace Pipedrive.Internal
             Body = bodyAsObject;
         }
 
-		public ApiResponse(IResponse response, T bodyAsObject, AdditionalData additionalData)
-		{
-			Ensure.ArgumentNotNull(response, nameof(response));
+        /// <summary>
+        /// The payload of the response
+        /// </summary>
+        public T Body { get; private set; }
 
-			HttpResponse = response;
-			Body = bodyAsObject;
-			AdditionalData = additionalData;
-
-		}
-
-		/// <summary>
-		/// The payload of the response
-		/// </summary>
-		public T Body { get; private set; }
-		public AdditionalData AdditionalData { get; private set; }
-
-
-		/// <summary>
-		/// The context of the response
-		/// </summary>
-		public IResponse HttpResponse { get; private set; }
+        /// <summary>
+        /// The context of the response
+        /// </summary>
+        public IResponse HttpResponse { get; private set; }
 
         static T GetBodyAsObject(IResponse response)
         {

@@ -1,17 +1,17 @@
 ﻿using Newtonsoft.Json;
-using Pipedrive.Http;
 
-namespace Pipedrive.Internal
+namespace Pipedrive
 {
-    internal class JsonResponse<T>
+    public class JsonResponse<T>
     {
         public bool Success { get; set; }
 
         public T Data { get; set; }
 
-		[JsonProperty("additional_data")]
-		public AdditionalData AdditionalData { get; set; }
-		public object Related_Objects { get; set; }
+        [JsonProperty("additional_data")]
+        public AdditionalData AdditionalData { get; set; }
 
-	}
+        [JsonProperty("related_objects")]
+        public object RelatedObjects { get; set; }
+    }
 }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Pipedrive
 {
     [JsonConverter(typeof(CustomFieldConverter))]
-    public class Deal : IEntityWithCustomFields, IRecentsEntity
+    public class Deal : IEntityWithCustomFields
     {
         public long Id { get; set; }
 
@@ -30,7 +30,7 @@ namespace Pipedrive
         public string Title { get; set; }
 
         [JsonProperty("value")]
-        public long Value { get; set; }
+        public decimal Value { get; set; }
 
         [JsonProperty("currency")]
         public string Currency { get; set; }

@@ -9,11 +9,10 @@ namespace Pipedrive.Internal
     public class ReadOnlyPagedCollection<T> : ReadOnlyCollection<T>, IReadOnlyPagedCollection<T>
     {
         readonly ApiInfo _info;
-		public PaginationInfo Pagination { get; private set; }
-        readonly Func<Uri, Task<IApiResponse<List<T>>>> _nextPageFunc;
+        readonly Func<Uri, Task<IApiResponse<JsonResponse<List<T>>>>> _nextPageFunc;
 
-        public ReadOnlyPagedCollection(IApiResponse<List<T>> response, Func<Uri, Task<IApiResponse<List<T>>>> nextPageFunc)
-            : base(response != null ? response.Body ?? new List<T>() : new List<T>())
+        public ReadOnlyPagedCollection(IApiResponse<JsonResponse<List<T>>> response, Func<Uri, Task<IApiResponse<JsonResponse<List<T>>>>> nextPageFunc)
+            : base(response != null ? response.Body?.Data ?? new List<T>() : new List<T>())
         {
             Ensure.ArgumentNotNull(response, nameof(response));
             Ensure.ArgumentNotNull(nextPageFunc, nameof(nextPageFunc));
@@ -22,15 +21,11 @@ namespace Pipedrive.Internal
             if (response != null)
             {
                 _info = response.HttpResponse.ApiInfo;
-				Pagination = response.AdditionalData!= null ? response.AdditionalData.Pagination : null;
             }
         }
 
-	
-
         public async Task<IReadOnlyPagedCollection<T>> GetNextPage()
         {
-
             var nextPageUrl = _info.GetNextPageUrl();
             if (nextPageUrl == null) return null;
 
@@ -44,6 +39,5 @@ namespace Pipedrive.Internal
             var response = await maybeTask.ConfigureAwait(false);
             return new ReadOnlyPagedCollection<T>(response, _nextPageFunc);
         }
-	
     }
 }

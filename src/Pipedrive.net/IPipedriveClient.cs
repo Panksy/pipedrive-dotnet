@@ -7,9 +7,8 @@ namespace Pipedrive
         void SetRequestTimeout(TimeSpan timeout);
 
         IConnection Connection { get; }
-		string AccountSubdomain { get; }
 
-		IActivitiesClient Activity { get; }
+        IActivitiesClient Activity { get; }
 
         IActivityFieldsClient ActivityField { get; }
 
@@ -23,9 +22,7 @@ namespace Pipedrive
 
         IFilesClient File { get; }
 
-		IMailMessagesClient MailMessage { get; }
-
-		INotesClient Note { get; }
+        INotesClient Note { get; }
 
         IOrganizationsClient Organization { get; }
 
@@ -34,10 +31,10 @@ namespace Pipedrive
         IPersonsClient Person { get; }
 
         IPersonFieldsClient PersonField { get; }
-		
-		IPipelinesClient Pipeline {get;}
-        IRecentsClient Recents { get; }
-        IStagesClient Stage {get;}
+
+        IPipelinesClient Pipeline { get; }
+
+        IStagesClient Stage { get; }
 
         IUsersClient User { get; }
 

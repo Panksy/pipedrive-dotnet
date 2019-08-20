@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 
@@ -16,17 +16,18 @@ namespace Pipedrive.Tests.Integration
 
             if (uri != null)
             {
-                return new Uri($"https://{uri}.pipedrive.com");
+                return new Uri(uri);
             }
 
             return null;
         });
 
-        public static IPipedriveClient GetAuthenticatedClient(bool useSecondUser = false)
+        public static IPipedriveClient GetAuthenticatedClient()
         {
-            Environment.SetEnvironmentVariable("PIPEDRIVE_APITOKEN", "be7d8965e9bb3300acbe2048be0c6b9a79e5938e ");
-            Environment.SetEnvironmentVariable("PIPEDRIVE_URL", "snappetus");
-            return new PipedriveClient(new ProductHeaderValue("PipedriveTests"), ApiUrl, ApiToken);
+            return new PipedriveClient(new ProductHeaderValue("PipedriveTests"), ApiUrl)
+            {
+                Credentials = new Credentials(ApiToken, AuthenticationType.ApiToken)
+            };
         }
 
         public static Stream LoadFixture(string fileName)

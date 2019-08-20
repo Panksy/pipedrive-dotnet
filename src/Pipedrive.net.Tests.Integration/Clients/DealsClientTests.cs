@@ -107,6 +107,9 @@ namespace Pipedrive.Tests.Integration.Clients
 
                 var retrieved = await fixture.Get(deal.Id);
                 Assert.NotNull(retrieved);
+
+                // Cleanup
+                await fixture.Delete(deal.Id);
             }
         }
 
@@ -166,6 +169,9 @@ namespace Pipedrive.Tests.Integration.Clients
                 Assert.Equal(5, ((OrganizationCustomField)updatedDeal.CustomFields["91f2a72b3373f7a382b1313c047ebd67ed117721"]).Value);
                 Assert.Equal(6, ((PersonCustomField)updatedDeal.CustomFields["b7f70559583cdfd159d4831697d0540c297ef26f"]).Value);
                 Assert.Equal(2616956, ((UserCustomField)updatedDeal.CustomFields["a0d868dde5bb67a59117d807fae1d6b3b025731e"]).Value);
+
+                // Cleanup
+                await fixture.Delete(updatedDeal.Id);
             }
         }
 
@@ -263,6 +269,31 @@ namespace Pipedrive.Tests.Integration.Clients
             }
         }
 
+        public class TheAddFollowerMethod
+        {
+            [IntegrationTest]
+            public async Task CanAddFollower()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+                var fixture = pipedrive.Deal;
+
+                var addFollower = await fixture.AddFollower(1, 595707);
+                Assert.NotNull(addFollower);
+            }
+        }
+
+        public class TheDeleteFollowerMethod
+        {
+            [IntegrationTest]
+            public async Task CanDeleteFollower()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+                var fixture = pipedrive.Deal;
+
+                await fixture.DeleteFollower(1, 461);
+            }
+        }
+
         public class TheGetActivitiesMethod
         {
             [IntegrationTest]
@@ -319,6 +350,90 @@ namespace Pipedrive.Tests.Integration.Clients
                 var secondPage = await pipedrive.Deal.GetActivities(1, skipStartOptions);
 
                 Assert.NotEqual(firstPage[0].Id, secondPage[0].Id);
+            }
+        }
+
+        public class TheGetParticipantsMethod
+        {
+            [IntegrationTest]
+            public async Task ReturnsCorrectCountWithoutStart()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+
+                var options = new DealParticipantFilters
+                {
+                    PageSize = 3,
+                    PageCount = 1
+                };
+
+                var dealUpdates = await pipedrive.Deal.GetParticipants(4, options);
+                Assert.Equal(3, dealUpdates.Count);
+            }
+
+            [IntegrationTest]
+            public async Task ReturnsCorrectCountWithStart()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+
+                var options = new DealParticipantFilters
+                {
+                    PageSize = 2,
+                    PageCount = 1,
+                    StartPage = 1
+                };
+
+                var deals = await pipedrive.Deal.GetParticipants(4, options);
+                Assert.Equal(2, deals.Count);
+            }
+
+            [IntegrationTest]
+            public async Task ReturnsDistinctInfosBasedOnStartPage()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+
+                var startOptions = new DealParticipantFilters
+                {
+                    PageSize = 1,
+                    PageCount = 1
+                };
+
+                var firstPage = await pipedrive.Deal.GetParticipants(4, startOptions);
+
+                var skipStartOptions = new DealParticipantFilters
+                {
+                    PageSize = 1,
+                    PageCount = 1,
+                    StartPage = 1
+                };
+
+                var secondPage = await pipedrive.Deal.GetParticipants(4, skipStartOptions);
+
+                Assert.NotEqual(firstPage[0].PersonId, secondPage[0].PersonId);
+            }
+        }
+
+        public class TheAddParticipantMethod
+        {
+            [IntegrationTest]
+            public async Task CanAddParticipant()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+                var fixture = pipedrive.Deal;
+
+                var addParticipant = await fixture.AddParticipant(1, 141);
+                Assert.NotNull(addParticipant);
+            }
+        }
+
+        public class TheDeleteParticipantMethod
+        {
+            [IntegrationTest]
+            public async Task CanDeleteParticipant()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+                var fixture = pipedrive.Deal;
+
+                await fixture.DeleteParticipant(1, 5);
             }
         }
     }

@@ -19,11 +19,8 @@ namespace Pipedrive
 
         [JsonProperty("bcc")]
         public List<MailMessageRecipient> Bcc { get; set; }
-		
-		[JsonProperty("body")]
-		public string Body { get; set; }
 
-		[JsonProperty("body_url")]
+        [JsonProperty("body_url")]
         public string BodyUrl { get; set; }
 
         [JsonProperty("nylas_id")]

@@ -18,19 +18,12 @@ namespace Pipedrive
 
         Task<Organization> Get(long id);
 
-		Task<IReadOnlyList<Deal>> GetDeals(long id);
-
-		Task<IReadOnlyList<Person>> GetPersons(long id);
-
-		Task<IReadOnlyList<Activity>> GetActivities(long id);
-
-		Task<IReadOnlyList<Deal>> GetDeals(long id, DealFilters filters);
-
-		Task<Organization> Create(NewOrganization data);
+        Task<Organization> Create(NewOrganization data);
 
         Task<Organization> Edit(long id, OrganizationUpdate data);
-		Task<Organization> Edit(long id, CustomFieldValueUpdate data);
 
-		Task Delete(long id);
+        Task Delete(long id);
+
+        Task<IReadOnlyList<Deal>> GetDeals(long organizationId, OrganizationDealFilters filters);
     }
 }

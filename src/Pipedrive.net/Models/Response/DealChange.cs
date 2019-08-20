@@ -10,11 +10,7 @@ namespace Pipedrive
         [JsonProperty("item_id")]
         public long ItemId { get; set; }
 
-		
-		[JsonProperty("field_key")]
-		public string FieldKey { get; set; }
-
-		[JsonProperty("user_id")]
+        [JsonProperty("user_id")]
         public long UserId { get; set; }
 
         [JsonProperty("old_value")]

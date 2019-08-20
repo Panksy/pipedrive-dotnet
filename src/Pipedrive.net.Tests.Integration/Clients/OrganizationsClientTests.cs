@@ -106,6 +106,9 @@ namespace Pipedrive.Tests.Integration.Clients
 
                 var retrieved = await fixture.Get(organization.Id);
                 Assert.NotNull(retrieved);
+
+                // Cleanup
+                await fixture.Delete(organization.Id);
             }
         }
 
@@ -128,6 +131,9 @@ namespace Pipedrive.Tests.Integration.Clients
 
                 Assert.Equal("updated-name", updatedOrganization.Name);
                 Assert.Equal(Visibility.shared, updatedOrganization.VisibleTo);
+
+                // Cleanup
+                await fixture.Delete(updatedOrganization.Id);
             }
         }
 
@@ -151,6 +157,65 @@ namespace Pipedrive.Tests.Integration.Clients
                 var deletedOrganization = await fixture.Get(createdOrganization.Id);
 
                 Assert.False(deletedOrganization.ActiveFlag);
+            }
+        }
+
+        public class TheGetDealsMethod
+        {
+            [IntegrationTest]
+            public async Task ReturnsCorrectCountWithoutStart()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+
+                var options = new OrganizationDealFilters
+                {
+                    PageSize = 3,
+                    PageCount = 1
+                };
+
+                var stageDeals = await pipedrive.Organization.GetDeals(5, options);
+                Assert.Equal(3, stageDeals.Count);
+            }
+
+            [IntegrationTest]
+            public async Task ReturnsCorrectCountWithStart()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+
+                var options = new OrganizationDealFilters
+                {
+                    PageSize = 2,
+                    PageCount = 1,
+                    StartPage = 1
+                };
+
+                var deals = await pipedrive.Organization.GetDeals(5, options);
+                Assert.Equal(2, deals.Count);
+            }
+
+            [IntegrationTest]
+            public async Task ReturnsDistinctInfosBasedOnStartPage()
+            {
+                var pipedrive = Helper.GetAuthenticatedClient();
+
+                var startOptions = new OrganizationDealFilters
+                {
+                    PageSize = 1,
+                    PageCount = 1
+                };
+
+                var firstPage = await pipedrive.Organization.GetDeals(5, startOptions);
+
+                var skipStartOptions = new OrganizationDealFilters
+                {
+                    PageSize = 1,
+                    PageCount = 1,
+                    StartPage = 1
+                };
+
+                var secondPage = await pipedrive.Organization.GetDeals(5, skipStartOptions);
+
+                Assert.NotEqual(firstPage[0].Id, secondPage[0].Id);
             }
         }
     }

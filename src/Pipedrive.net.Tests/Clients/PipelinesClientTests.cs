@@ -19,7 +19,6 @@ namespace Pipedrive.Tests.Clients
 
         public class TheGetAllMethod
         {
-
             [Fact]
             public async Task RequestsCorrectUrl()
             {
@@ -30,14 +29,10 @@ namespace Pipedrive.Tests.Clients
 
                 Received.InOrder(async () =>
                 {
-                    await connection.GetAll<Pipeline>(
-                        Arg.Is<Uri>(u => u.ToString() == "pipelines")
-					);
-				});
+                    await connection.GetAll<Pipeline>(Arg.Is<Uri>(u => u.ToString() == "pipelines"));
+                });
             }
         }
-
-      
 
         public class TheGetMethod
         {
@@ -73,10 +68,11 @@ namespace Pipedrive.Tests.Clients
                 var client = new PipelinesClient(connection);
 
                 var newPipeline = new NewPipeline("name");
+
                 client.Create(newPipeline);
 
                 connection.Received().Post<Pipeline>(Arg.Is<Uri>(u => u.ToString() == "pipelines"),
-                    Arg.Is<NewPipeline>(d => d.Name == "name"));
+                    Arg.Is<NewPipeline>(nc => nc.Name == "name"));
             }
         }
 
@@ -100,7 +96,7 @@ namespace Pipedrive.Tests.Clients
                 client.Edit(123, editPipeline);
 
                 connection.Received().Put<Pipeline>(Arg.Is<Uri>(u => u.ToString() == "pipelines/123"),
-                    Arg.Is<PipelineUpdate>(d => d.Name == "name"));
+                    Arg.Is<PipelineUpdate>(nc => nc.Name == "name"));
             }
         }
 
@@ -115,6 +111,45 @@ namespace Pipedrive.Tests.Clients
                 client.Delete(123);
 
                 connection.Received().Delete(Arg.Is<Uri>(u => u.ToString() == "pipelines/123"));
+            }
+        }
+
+        public class TheGetDealsMethod
+        {
+            [Fact]
+            public async Task EnsuresNonNullArguments()
+            {
+                var client = new PipelinesClient(Substitute.For<IApiConnection>());
+
+                await Assert.ThrowsAsync<ArgumentNullException>(() => client.GetDeals(1, null));
+            }
+
+            [Fact]
+            public async Task RequestsCorrectUrl()
+            {
+                var connection = Substitute.For<IApiConnection>();
+                var client = new PipelinesClient(connection);
+
+                var filters = new PipelineDealFilters
+                {
+                    PageSize = 1,
+                    PageCount = 1,
+                    StartPage = 0,
+                };
+
+                await client.GetDeals(123, filters);
+
+                Received.InOrder(async () =>
+                {
+                    await connection.GetAll<PipelineDeal>(
+                        Arg.Is<Uri>(u => u.ToString() == "pipelines/123/deals"),
+                        Arg.Is<Dictionary<string, string>>(d => d.Count == 1
+                            && d["id"] == "123"),
+                        Arg.Is<ApiOptions>(o => o.PageSize == 1
+                                && o.PageCount == 1
+                                && o.StartPage == 0)
+                        );
+                });
             }
         }
     }

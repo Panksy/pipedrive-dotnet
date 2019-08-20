@@ -1,5 +1,4 @@
-﻿using Pipedrive.Http;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 
 namespace Pipedrive
@@ -13,11 +12,11 @@ namespace Pipedrive
         /// Object deserialized from the JSON response body.
         /// </summary>
         T Body { get; }
-		AdditionalData AdditionalData { get;  }
-		/// <summary>
-		/// The original non-deserialized http response.
-		/// </summary>
-		IResponse HttpResponse { get; }
+
+        /// <summary>
+        /// The original non-deserialized http response.
+        /// </summary>
+        IResponse HttpResponse { get; }
     }
 
     /// <summary>
@@ -39,16 +38,11 @@ namespace Pipedrive
         /// Information about the API response parsed from the response headers.
         /// </summary>
         ApiInfo ApiInfo { get; }
-		AdditionalData AdditionalData { get; }
-		/// <summary>
-		/// Information about the API response parsed from the additoinal data in the body
-		/// </summary>
-		//	PaginationInfo PaginationInfo { get; }
 
-		/// <summary>
-		/// The response status code.
-		/// </summary>
-		HttpStatusCode StatusCode { get; }
+        /// <summary>
+        /// The response status code.
+        /// </summary>
+        HttpStatusCode StatusCode { get; }
 
         /// <summary>
         /// The content type of the response.

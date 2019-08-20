@@ -19,7 +19,7 @@ namespace Pipedrive.Tests.Clients
 
         public class TheGetAllMethod
         {
-           [Fact]
+            [Fact]
             public async Task RequestsCorrectUrl()
             {
                 var connection = Substitute.For<IApiConnection>();
@@ -30,14 +30,12 @@ namespace Pipedrive.Tests.Clients
                 Received.InOrder(async () =>
                 {
                     await connection.GetAll<Stage>(
-                        Arg.Is<Uri>(u => u.ToString() == "stages")
-                        );
+                        Arg.Is<Uri>(u => u.ToString() == "stages"));
                 });
             }
         }
 
-      
-        public class TheGetAllWithPipelineMethod
+        public class TheGetAllForPipelineIdMethod
         {
             [Fact]
             public async Task RequestsCorrectUrl()
@@ -49,13 +47,13 @@ namespace Pipedrive.Tests.Clients
 
                 Received.InOrder(async () =>
                 {
-                    await connection.GetAll<Stage>(Arg.Is<Uri>(u => u.ToString() == "stages"),
+                    await connection.GetAll<Stage>(
+                        Arg.Is<Uri>(u => u.ToString() == "stages"),
                         Arg.Is<Dictionary<string, string>>(d => d.Count == 1
-                            && d["pipeline_id"] == "1"));
+                                && d["pipeline_id"] == "1"));
                 });
             }
         }
-
 
         public class TheGetMethod
         {
@@ -91,10 +89,11 @@ namespace Pipedrive.Tests.Clients
                 var client = new StagesClient(connection);
 
                 var newStage = new NewStage("name", 1);
+
                 client.Create(newStage);
 
                 connection.Received().Post<Stage>(Arg.Is<Uri>(u => u.ToString() == "stages"),
-                    Arg.Is<NewStage>(d => d.Name == "name"));
+                    Arg.Is<NewStage>(nc => nc.Name == "name" && nc.PipelineId == 1));
             }
         }
 
@@ -118,7 +117,7 @@ namespace Pipedrive.Tests.Clients
                 client.Edit(123, editStage);
 
                 connection.Received().Put<Stage>(Arg.Is<Uri>(u => u.ToString() == "stages/123"),
-                    Arg.Is<StageUpdate>(d => d.Name == "name"));
+                    Arg.Is<StageUpdate>(nc => nc.Name == "name"));
             }
         }
 
@@ -133,6 +132,45 @@ namespace Pipedrive.Tests.Clients
                 client.Delete(123);
 
                 connection.Received().Delete(Arg.Is<Uri>(u => u.ToString() == "stages/123"));
+            }
+        }
+
+        public class TheGetDealsMethod
+        {
+            [Fact]
+            public async Task EnsuresNonNullArguments()
+            {
+                var client = new StagesClient(Substitute.For<IApiConnection>());
+
+                await Assert.ThrowsAsync<ArgumentNullException>(() => client.GetDeals(1, null));
+            }
+
+            [Fact]
+            public async Task RequestsCorrectUrl()
+            {
+                var connection = Substitute.For<IApiConnection>();
+                var client = new StagesClient(connection);
+
+                var filters = new StageDealFilters
+                {
+                    PageSize = 1,
+                    PageCount = 1,
+                    StartPage = 0,
+                };
+
+                await client.GetDeals(123, filters);
+
+                Received.InOrder(async () =>
+                {
+                    await connection.GetAll<PipelineDeal>(
+                        Arg.Is<Uri>(u => u.ToString() == "stages/123/deals"),
+                        Arg.Is<Dictionary<string, string>>(d => d.Count == 1
+                            && d["id"] == "123"),
+                        Arg.Is<ApiOptions>(o => o.PageSize == 1
+                                && o.PageCount == 1
+                                && o.StartPage == 0)
+                        );
+                });
             }
         }
     }

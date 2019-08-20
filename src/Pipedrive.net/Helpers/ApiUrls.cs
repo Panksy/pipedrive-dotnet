@@ -28,24 +28,20 @@ namespace Pipedrive
         static readonly Uri _organizationFieldsUrl = new Uri("organizationFields", UriKind.Relative);
 
         static readonly Uri _personsUrl = new Uri("persons", UriKind.Relative);
-		
+
         static readonly Uri _personFieldsUrl = new Uri("personFields", UriKind.Relative);
 
-        static readonly Uri _usersUrl = new Uri("users", UriKind.Relative);
-
-		static readonly Uri _pipelinesUrl = new Uri("pipelines", UriKind.Relative);
-
-        static readonly Uri _recentsUrl = new Uri("recents", UriKind.Relative);
+        static readonly Uri _pipelinesUrl = new Uri("pipelines", UriKind.Relative);
 
         static readonly Uri _stagesUrl = new Uri("stages", UriKind.Relative);
 
-		static readonly Uri _mailMessagesUrl = new Uri("mailbox/mailMessages", UriKind.Relative);
+        static readonly Uri _usersUrl = new Uri("users", UriKind.Relative);
 
-		/// <summary>
-		/// Returns the <see cref="Uri"/> that returns all of the activities.
-		/// </summary>
-		/// <returns></returns>
-		public static Uri Activities()
+        /// <summary>
+        /// Returns the <see cref="Uri"/> that returns all of the activities.
+        /// </summary>
+        /// <returns></returns>
+        public static Uri Activities()
         {
             return _activitiesUrl;
         }
@@ -131,22 +127,23 @@ namespace Pipedrive
             return new Uri($"deals/{id}/flow", UriKind.Relative);
         }
 
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for merging the specified deal.
-		/// </summary>
-		/// <param name="id">The id of the deal</param>
-		public static Uri DealMerge(long id)
-		{
-			return new Uri($"deals/{id}/merge", UriKind.Relative);
-		}
-
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for all the followers of the specified deal.
-		/// </summary>
-		/// <param name="id">The id of the deal</param>
-		public static Uri DealFollowers(long id)
+        /// <summary>
+        /// Returns the <see cref="Uri"/> for all the followers of the specified deal.
+        /// </summary>
+        /// <param name="id">The id of the deal</param>
+        public static Uri DealFollowers(long id)
         {
             return new Uri($"deals/{id}/followers", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Uri"/> for deleting the participant of the specified deal.
+        /// </summary>
+        /// <param name="id">The id of the deal</param>
+        /// <param name="dealParticipantId">The id of the deal participant</param>
+        public static Uri DeleteDealFollower(long id, long dealParticipantId)
+        {
+            return new Uri($"deals/{id}/followers/{dealParticipantId}", UriKind.Relative);
         }
 
         /// <summary>
@@ -156,6 +153,25 @@ namespace Pipedrive
         public static Uri DealActivities(long id)
         {
             return new Uri($"deals/{id}/activities", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Uri"/> for all the participants of the specified deal.
+        /// </summary>
+        /// <param name="id">The id of the deal</param>
+        public static Uri DealParticipants(long id)
+        {
+            return new Uri($"deals/{id}/participants", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Uri"/> for deleting the participant of the specified deal.
+        /// </summary>
+        /// <param name="id">The id of the deal</param>
+        /// <param name="dealParticipantId">The id of the deal participant</param>
+        public static Uri DeleteDealParticipant(long id, long dealParticipantId)
+        {
+            return new Uri($"deals/{id}/participants/{dealParticipantId}", UriKind.Relative);
         }
 
         /// <summary>
@@ -193,19 +209,12 @@ namespace Pipedrive
         {
             return new Uri($"files/{id}", UriKind.Relative);
         }
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for the specified mail message.
-		/// </summary>
-		/// <param name="id">The id of the mail message</param>
-		public static Uri MailMessage(long id)
-		{
-			return new Uri($"{_mailMessagesUrl}/{id}", UriKind.Relative);
-		}
-		/// <summary>
-		/// Returns the <see cref="Uri"/> that returns all of the notes in response to a GET request.
-		/// </summary>
-		/// <returns></returns>
-		public static Uri Notes()
+
+        /// <summary>
+        /// Returns the <see cref="Uri"/> that returns all of the notes in response to a GET request.
+        /// </summary>
+        /// <returns></returns>
+        public static Uri Notes()
         {
             return _notesUrl;
         }
@@ -236,38 +245,23 @@ namespace Pipedrive
         {
             return new Uri("organizations/find", UriKind.Relative);
         }
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for the specified organizations.
-		/// </summary>
-		/// <param name="id">The id of the organizations</param>
-		public static Uri OrganizationDeals(long id)
-		{
-			return new Uri($"organizations/{id}/deals", UriKind.Relative);
-		}
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for the specified organizations.
-		/// </summary>
-		/// <param name="id">The id of the organizations</param>
-		public static Uri OrganizationPersons(long id)
-		{
-			return new Uri($"organizations/{id}/persons", UriKind.Relative);
-		}
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for the specified organizations.
-		/// </summary>
-		/// <param name="id">The id of the organizations</param>
-		public static Uri OrganizationActivities(long id)
-		{
-			return new Uri($"organizations/{id}/activities", UriKind.Relative);
-		}
 
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for the specified organization.
-		/// </summary>
-		/// <param name="id">The id of the organization</param>
-		public static Uri Organization(long id)
+        /// <summary>
+        /// Returns the <see cref="Uri"/> for the specified organization.
+        /// </summary>
+        /// <param name="id">The id of the organization</param>
+        public static Uri Organization(long id)
         {
             return new Uri($"organizations/{id}", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Uri"/> for all the deals of the specified organization.
+        /// </summary>
+        /// <param name="id">The id of the organization</param>
+        public static Uri OrganizationDeal(long id)
+        {
+            return new Uri($"organizations/{id}/deals", UriKind.Relative);
         }
 
         /// <summary>
@@ -316,6 +310,15 @@ namespace Pipedrive
         }
 
         /// <summary>
+        /// Returns the <see cref="Uri"/> for all the deals of the specified person.
+        /// </summary>
+        /// <param name="id">The id of the person</param>
+        public static Uri PersonDeal(long id)
+        {
+            return new Uri($"persons/{id}/deals", UriKind.Relative);
+        }
+
+        /// <summary>
         /// Returns the <see cref="Uri"/> that returns all of the person fields in response to a GET request.
         /// </summary>
         /// <returns></returns>
@@ -333,7 +336,7 @@ namespace Pipedrive
             return new Uri($"personFields/{id}", UriKind.Relative);
         }
 
-		  /// <summary>
+        /// <summary>
         /// Returns the <see cref="Uri"/> that returns all of the pipelines in response to a GET request.
         /// </summary>
         /// <returns></returns>
@@ -342,7 +345,7 @@ namespace Pipedrive
             return _pipelinesUrl;
         }
 
-		/// <summary>
+        /// <summary>
         /// Returns the <see cref="Uri"/> for the specified pipeline.
         /// </summary>
         /// <param name="id">The id of the pipeline</param>
@@ -351,22 +354,15 @@ namespace Pipedrive
             return new Uri($"pipelines/{id}", UriKind.Relative);
         }
 
-		/// <summary>
-		/// Returns the <see cref="Uri"/> for the specified pipeline.
-		/// </summary>
-		/// <param name="id">The id of the pipeline</param>
-		public static Uri PipelineDeals(long id)
-		{
-			return new Uri($"pipelines/{id}/deals", UriKind.Relative);
-		}
         /// <summary>
-        /// Returns the <see cref="Uri"/> that returns all of the stages in response to a GET request.
+        /// Returns the <see cref="Uri"/> for all the deals of the specified pipeline.
         /// </summary>
-        /// <returns></returns>
-        public static Uri Recents()
+        /// <param name="id">The id of the pipeline</param>
+        public static Uri PipelineDeal(long id)
         {
-            return _recentsUrl;
+            return new Uri($"pipelines/{id}/deals", UriKind.Relative);
         }
+
         /// <summary>
         /// Returns the <see cref="Uri"/> that returns all of the stages in response to a GET request.
         /// </summary>
@@ -376,13 +372,22 @@ namespace Pipedrive
             return _stagesUrl;
         }
 
-		/// <summary>
+        /// <summary>
         /// Returns the <see cref="Uri"/> for the specified stage.
         /// </summary>
         /// <param name="id">The id of the stage</param>
         public static Uri Stage(long id)
         {
             return new Uri($"stages/{id}", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Uri"/> for all the deals of the specified stage.
+        /// </summary>
+        /// <param name="id">The id of the stage</param>
+        public static Uri StageDeal(long id)
+        {
+            return new Uri($"stages/{id}/deals", UriKind.Relative);
         }
 
         /// <summary>
@@ -404,12 +409,48 @@ namespace Pipedrive
         }
 
         /// <summary>
+        /// return the <see cref="Uri"/> that return all the finded users.
+        /// </summary>
+        /// <returns></returns>
+        public static Uri UsersMe()
+        {
+            return new Uri("users/me", UriKind.Relative);
+        }
+
+        /// <summary>
         /// Returns the <see cref="Uri"/> for the specified user.
         /// </summary>
         /// <param name="id">The id of the user</param>
         public static Uri User(long id)
         {
             return new Uri($"users/{id}", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Creates the relative <see cref="Uri"/> for initiating the OAuth Web login Flow
+        /// </summary>
+        /// <returns></returns>
+        public static Uri OAuthAuthorize()
+        {
+            return new Uri("oauth/authorize", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Creates the relative <see cref="Uri"/> to request an OAuth access token.
+        /// </summary>
+        /// <returns></returns>
+        public static Uri OAuthAccessToken()
+        {
+            return new Uri("oauth/token", UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Creates the relative <see cref="Uri"/> to request an OAuth access token.
+        /// </summary>
+        /// <returns></returns>
+        public static Uri OAuthRevokeToken()
+        {
+            return new Uri("oauth/revoke", UriKind.Relative);
         }
     }
 }

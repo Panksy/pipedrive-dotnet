@@ -1,5 +1,4 @@
 ﻿using Pipedrive.Helpers;
-using Pipedrive.Http;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
@@ -45,21 +44,14 @@ namespace Pipedrive.Internal
         /// <summary>
         /// Information about the API response parsed from the response headers.
         /// </summary>
-		/// 
         public ApiInfo ApiInfo { get; internal set; } // This setter is internal for use in tests.
         /// <summary>
         /// The response status code.
         /// </summary>
-		/// 
-		public AdditionalData AdditionalData { get; private set; }
-
         public HttpStatusCode StatusCode { get; private set; }
         /// <summary>
         /// The content type of the response.
         /// </summary>
         public string ContentType { get; private set; }
-
-
-
     }
 }

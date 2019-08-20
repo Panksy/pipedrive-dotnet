@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Pipedrive.Helpers;
-using Pipedrive.Http;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -42,18 +41,8 @@ namespace Pipedrive.Internal
                 // simple json does not support the root node being empty. Will submit a pr but in the mean time....
                 if (!string.IsNullOrEmpty(body) && body != "{}")
                 {
-                    T newBody = default(T);
-					AdditionalData additionalInfo = new AdditionalData();
-
-					if (body.StartsWith("{", StringComparison.Ordinal) || body.StartsWith("[", StringComparison.Ordinal))
-                    {
-                        var json = JsonConvert.DeserializeObject<JsonResponse<T>>(body);
-                        newBody = json.Data;
-						additionalInfo = json.AdditionalData;
-
-					}
-
-                    return new ApiResponse<T>(response, newBody, additionalInfo);
+                    var json = JsonConvert.DeserializeObject<T>(body);
+                    return new ApiResponse<T>(response, json);
                 }
             }
             return new ApiResponse<T>(response);

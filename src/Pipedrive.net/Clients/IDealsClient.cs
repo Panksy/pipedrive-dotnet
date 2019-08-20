@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Pipedrive.Models.Response;
 
 namespace Pipedrive
 {
@@ -23,15 +24,23 @@ namespace Pipedrive
         Task<Deal> Create(NewDeal data);
 
         Task<Deal> Edit(long id, DealUpdate data);
-		Task<Deal> Edit(long id, CustomFieldValueUpdate data);
-		Task<SimpleDeal> Merge(long id, long merge_with_id);
 
-		Task Delete(long id);
+        Task Delete(long id);
 
         Task<IReadOnlyList<DealUpdateFlow>> GetUpdates(long dealId, DealUpdateFilters filters);
 
         Task<IReadOnlyList<Follower>> GetFollowers(long dealId);
 
-        Task<IReadOnlyList<Activity>> GetActivities(long dealId, DealActivityFilters filters);
+        Task<Follower> AddFollower(long dealId, long userId);
+
+        Task DeleteFollower(long dealId, long followerId);
+
+        Task<IReadOnlyList<DealActivity>> GetActivities(long dealId, DealActivityFilters filters);
+
+        Task<IReadOnlyList<DealParticipant>> GetParticipants(long dealId, DealParticipantFilters filters);
+
+        Task<DealParticipant> AddParticipant(long dealId, long personId);
+
+        Task DeleteParticipant(long dealId, long dealParticipantId);
     }
 }

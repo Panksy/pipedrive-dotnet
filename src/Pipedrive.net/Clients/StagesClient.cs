@@ -8,11 +8,11 @@ namespace Pipedrive
     /// A client for Pipedrive's Stage API.
     /// </summary>
     /// <remarks>
-    /// See the <a href="https://developers.pipedrive.com/docs/api/v1/#!/Stages">Stages API documentation</a> for more information.
+    /// See the <a href="https://developers.pipedrive.com/docs/api/v1/#!/Stages">Stage API documentation</a> for more information.
     public class StagesClient : ApiClient, IStagesClient
     {
         /// <summary>
-        /// Initializes a new Stages API client.
+        /// Initializes a new Stage API client.
         /// </summary>
         /// <param name="apiConnection">An API connection</param>
         public StagesClient(IApiConnection apiConnection) : base(apiConnection)
@@ -21,21 +21,18 @@ namespace Pipedrive
 
         public Task<IReadOnlyList<Stage>> GetAll()
         {
-           
             return ApiConnection.GetAll<Stage>(ApiUrls.Stages());
         }
 
         public Task<IReadOnlyList<Stage>> GetAllForPipelineId(long pipelineId)
         {
-			var filters = new StageFilters(){ 
-				PipelineId = pipelineId
-			};
-            var parameters = filters.Parameters;
+            var parameters = new Dictionary<string, string>()
+            {
+                { "pipeline_id", pipelineId.ToString() }
+            };
 
             return ApiConnection.GetAll<Stage>(ApiUrls.Stages(), parameters);
         }
-
- 
 
         public Task<Stage> Get(long id)
         {
@@ -59,6 +56,22 @@ namespace Pipedrive
         public Task Delete(long id)
         {
             return ApiConnection.Delete(ApiUrls.Stage(id));
+        }
+
+        public Task<IReadOnlyList<PipelineDeal>> GetDeals(long stageId, StageDealFilters filters)
+        {
+            Ensure.ArgumentNotNull(filters, nameof(filters));
+
+            var parameters = filters.Parameters;
+            parameters.Add("id", stageId.ToString());
+            var options = new ApiOptions
+            {
+                StartPage = filters.StartPage,
+                PageCount = filters.PageCount,
+                PageSize = filters.PageSize
+            };
+
+            return ApiConnection.GetAll<PipelineDeal>(ApiUrls.StageDeal(stageId), parameters, options);
         }
     }
 }

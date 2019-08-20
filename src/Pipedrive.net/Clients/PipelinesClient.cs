@@ -5,55 +5,31 @@ using System.Threading.Tasks;
 namespace Pipedrive
 {
     /// <summary>
-    /// A client for Pipedrive's Pipelines API.
+    /// A client for Pipedrive's Pipeline API.
     /// </summary>
     /// <remarks>
-    /// See the <a href="https://developers.pipedrive.com/docs/api/v1/#!/Pipelines">Pipelines API documentation</a> for more information.
+    /// See the <a href="https://developers.pipedrive.com/docs/api/v1/#!/Pipelines">Pipeline API documentation</a> for more information.
     public class PipelinesClient : ApiClient, IPipelinesClient
     {
         /// <summary>
-        /// Initializes a new Person API client.
+        /// Initializes a new Pipeline API client.
         /// </summary>
         /// <param name="apiConnection">An API connection</param>
         public PipelinesClient(IApiConnection apiConnection) : base(apiConnection)
         {
         }
 
-        public async Task<IReadOnlyList<Pipeline>> GetAll()
+        public Task<IReadOnlyList<Pipeline>> GetAll()
         {
-			return await ApiConnection.GetAll<Pipeline>(ApiUrls.Pipelines());
+            return ApiConnection.GetAll<Pipeline>(ApiUrls.Pipelines());
         }
 
-		public Task<Pipeline> Get(long id)
+        public Task<Pipeline> Get(long id)
         {
             return ApiConnection.Get<Pipeline>(ApiUrls.Pipeline(id));
         }
 
-		public Task<IReadOnlyList<SimpleCustomDeal>> GetDeals(long id)
-		{
-			var options = new ApiOptions
-			{
-				PageSize = 500
-			};
-
-			return ApiConnection.GetAll<SimpleCustomDeal>(ApiUrls.PipelineDeals(id),  options);
-		}
-
-		public Task<IReadOnlyList<SimpleCustomDeal>> GetDealsInStage(long id, long stageId)
-		{
-			var options = new ApiOptions
-			{
-				PageSize = 500
-			};
-
-			var parameters = new Dictionary<string, string>();
-			parameters.Add("stage_id", stageId.ToString());
-
-			return ApiConnection.GetAll<SimpleCustomDeal>(ApiUrls.PipelineDeals(id), parameters, options);
-		}
-
-
-		public Task<Pipeline> Create(NewPipeline data)
+        public Task<Pipeline> Create(NewPipeline data)
         {
             Ensure.ArgumentNotNull(data, nameof(data));
 
@@ -70,6 +46,22 @@ namespace Pipedrive
         public Task Delete(long id)
         {
             return ApiConnection.Delete(ApiUrls.Pipeline(id));
+        }
+
+        public Task<IReadOnlyList<PipelineDeal>> GetDeals(long pipelineId, PipelineDealFilters filters)
+        {
+            Ensure.ArgumentNotNull(filters, nameof(filters));
+
+            var parameters = filters.Parameters;
+            parameters.Add("id", pipelineId.ToString());
+            var options = new ApiOptions
+            {
+                StartPage = filters.StartPage,
+                PageCount = filters.PageCount,
+                PageSize = filters.PageSize
+            };
+
+            return ApiConnection.GetAll<PipelineDeal>(ApiUrls.PipelineDeal(pipelineId), parameters, options);
         }
     }
 }

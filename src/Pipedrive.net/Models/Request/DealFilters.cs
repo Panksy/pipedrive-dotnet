@@ -9,7 +9,7 @@ namespace Pipedrive
             get { return new DealFilters(); }
         }
 
-        public int? FilterId { get; set; }
+        public long? FilterId { get; set; }
 
         public long? StageId { get; set; }
 
@@ -37,7 +37,7 @@ namespace Pipedrive
                 }
                 if (StageId.HasValue)
                 {
-                    d.Add("stage_id", StageId.Value.ToString());
+                    d.Add("stage_id", FilterId.Value.ToString());
                 }
                 if (Status.HasValue)
                 {

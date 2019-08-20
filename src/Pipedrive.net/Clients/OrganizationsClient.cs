@@ -63,55 +63,7 @@ namespace Pipedrive
             return ApiConnection.Get<Organization>(ApiUrls.Organization(id));
         }
 
-		public Task<IReadOnlyList<Deal>> GetDeals(long id, DealFilters filters)
-		{
-			Ensure.ArgumentNotNull(filters, nameof(filters));
-			var parameters = filters.Parameters;
-			var options = new ApiOptions
-			{
-				PageSize = 500,
-			};
-
-			
-
-			return ApiConnection.GetAll<Deal>(ApiUrls.OrganizationDeals(id), parameters, options);
-		}
-		
-
-		public Task<IReadOnlyList<Deal>> GetDeals(long id)
-		{
-			var options = new ApiOptions
-			{
-				PageSize = 500
-			};
-
-			return ApiConnection.GetAll<Deal>(ApiUrls.OrganizationDeals(id), options);
-		}
-
-		public Task<IReadOnlyList<Activity>> GetActivities(long id)
-		{
-			var options = new ApiOptions
-			{
-				PageSize = 500
-			};
-
-			return ApiConnection.GetAll<Activity>(ApiUrls.OrganizationActivities(id), options);
-		}
-
-
-		public Task<IReadOnlyList<Person>> GetPersons(long id)
-		{
-			var options = new ApiOptions
-			{
-				PageSize = 500
-			};
-
-			return ApiConnection.GetAll<Person>(ApiUrls.OrganizationPersons(id), options);
-		}
-
-
-
-		public Task<Organization> Create(NewOrganization data)
+        public Task<Organization> Create(NewOrganization data)
         {
             Ensure.ArgumentNotNull(data, nameof(data));
 
@@ -124,15 +76,26 @@ namespace Pipedrive
 
             return ApiConnection.Put<Organization>(ApiUrls.Organization(id), data);
         }
-		public Task<Organization> Edit(long id, CustomFieldValueUpdate data)
-		{
-			Ensure.ArgumentNotNull(data, nameof(data));
 
-			return ApiConnection.Put<Organization>(ApiUrls.Organization(id), data);
-		}
-		public Task Delete(long id)
+        public Task Delete(long id)
         {
             return ApiConnection.Delete(ApiUrls.Organization(id));
+        }
+
+        public Task<IReadOnlyList<Deal>> GetDeals(long personId, OrganizationDealFilters filters)
+        {
+            Ensure.ArgumentNotNull(filters, nameof(filters));
+
+            var parameters = filters.Parameters;
+            parameters.Add("id", personId.ToString());
+            var options = new ApiOptions
+            {
+                StartPage = filters.StartPage,
+                PageCount = filters.PageCount,
+                PageSize = filters.PageSize
+            };
+
+            return ApiConnection.GetAll<Deal>(ApiUrls.OrganizationDeal(personId), parameters, options);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Pipedrive
             get { return new ActivityFilters(); }
         }
 
-        public int? FilterId { get; set; }
+        public long? FilterId { get; set; }
 
         public string Type { get; set; }
 
@@ -52,7 +52,7 @@ namespace Pipedrive
                 }
                 if (Done.HasValue)
                 {
-                    d.Add("done", Done.Value.ToString());
+                    d.Add("done", ((int)Done.Value).ToString());
                 }
                 return d;
             }
